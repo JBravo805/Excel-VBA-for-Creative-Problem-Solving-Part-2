@@ -1,0 +1,156 @@
+Option Explicit
+Option Base 1
+
+Sub AddFive()
+Dim i As Integer, j As Integer
+Dim nr As Integer, nc As Integer
+nr = Selection.Rows.count
+nc = Selection.Columns.count
+'If our active cell is not in the current selection this will not work
+Range("B2").Select
+Selection.CurrentRegion.Select
+For i = 1 To nr
+    For j = 1 To nc
+        Selection.Cells(i, j) = Selection.Cells(i, j) + 5
+    Next j
+Next i
+End Sub
+
+Sub AddFive2()
+Dim i As Integer, j As Integer
+Dim nr As Integer, nc As Integer
+nr = Selection.Rows.count
+nc = Selection.Columns.count
+'In VBA
+'Rows Only
+'If positive offset downward by i
+'If negative offset upward by i
+
+'Columns only
+'If positive offset to the right by j
+'If negative offset to the left by j
+For i = 1 To nr
+    For j = 1 To nc
+        ActiveCell.Offset(nr + i, j - 1) = Selection.Cells(i, j) + 5
+    Next j
+Next i
+End Sub
+'when i=1,j=1
+'ActiveCell.Offset(3+1, 1-1)=selection.cells(1,1)+5
+'ActiveCell.Offset(4,0) = 3+5
+'Offset downward by 4 rows and offset 0 columns
+
+'When i=1,j=2
+'ActiveCell.Offset(3+1, 2-1) = Selection.Cells(1,2) + 5
+'ActiveCell.Offset(4,1) = 9
+'Offset downward 4 rows and offset 1 column to the right
+
+'Example1: Create a VBA subroutine that counts the number
+'of elements in an array that are divisible by n, which is input by
+'the user.
+Sub DivisibleBy()
+Dim i As Integer, j As Integer, n As Integer
+Dim nr As Integer, nc As Integer, count As Integer
+nr = Selection.Rows.count
+nc = Selection.Columns.count
+n = InputBox("Enter a number: ")
+For i = 1 To nr
+    For j = 1 To nc
+        If Selection.Cells(i, j) Mod n = 0 Then
+            count = count + 1
+        End If
+    Next j
+Next i
+MsgBox "There are " & count & " numbers in your array that are divisible by " & count & "!"
+End Sub
+
+'Example2: Create a function of array that counts the number of elements
+'in an array that are divisible by n
+'To debug a function set a break point i.e.,click on the left of nr
+'Enter the name of function in excel > enter. You can now step into the function.
+Function CountDivisibleByN(rng As Range, n As Integer) As Integer
+Dim i As Integer, j As Integer
+Dim nr As Integer, nc As Integer, c As Integer
+nr = rng.Rows.count
+nc = rng.Columns.count
+For i = 1 To nr
+    For j = 1 To nc
+        If rng.Cells(i, j) Mod n = 0 Then
+            c = c + 1
+        End If
+    Next j
+Next i
+'we never use input boxes in functions
+'Instead we call the function name
+CountDivisibleByN = c
+End Function
+
+'a VBA program that restores the original values in a selected worksheet
+Sub RestoreOriginalValues()
+
+' Define the cell range to be restored
+Dim cellRange As Range, i As Integer, j As Integer
+Set cellRange = Worksheets("Sheet1").Range("B2:D4")
+
+'We add these two lines of code so it restores in the original region
+Range("B2").Select
+Selection.CurrentRegion.Select
+' Store the original values of the cells in an array
+'Dim originalValues() As Variant
+'ReDim originalValues(1 To cellRange.Rows.count, 1 To cellRange.Columns.count)
+
+For i = 1 To cellRange.Rows.count
+    For j = 1 To cellRange.Columns.count
+        Selection.Cells(i, j) = cellRange.Cells(i, j).Value
+    Next j
+Next i
+
+'For i = 1 To cellRange.Rows.count
+'    For j = 1 To cellRange.Columns.count
+'        cellRange.Cells(i, j).Value = originalValues(i, j)
+'    Next j
+'Next i
+
+End Sub
+
+'Testing to implement a universal sub or routine that may used in any workbook
+'So, we won't have to write it everytime
+'To accomplish this simply save as excel add-in
+Public Sub HelloWorld()
+    MsgBox "Hello, World!"
+End Sub
+
+Sub test2()
+    Call HelloWorld
+End Sub
+
+'This is a start but I want to implement this so I can use it in any workbook
+'Again save as excel add in
+Function multiply() As Double
+Dim x As Integer, y As Integer
+    x = InputBox("Enter a number: ")
+    y = InputBox("Enter a number: ")
+
+    multiply = x * y
+End Function
+
+Sub Main()
+    Dim result As Double
+    result = multiply()
+    MsgBox "The result is: " & result
+End Sub
+
+'a VBA program that allows a user to highlight a region of cells and clear
+'its contents, you can use the following code:
+Sub ClearSelectedCells()
+  
+  'Declare variables
+  Dim rng As Range
+  
+  'Prompt user to select a range of cells
+  Set rng = Application.InputBox("Select a range of cells:", "Clear Cells", Type:=8)
+  
+  'Clear the contents of the selected cells
+  rng.ClearContents
+  
+End Sub
