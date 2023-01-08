@@ -1,0 +1,47 @@
+Option Explicit
+Option Base 1
+
+'create a VBA array funciton called 'residuals' that fits data to a line
+'using the slope and intercept functions in Excel, then calculates the
+'residuals of all data points, and then outputs the residuals to Excel.
+Function Residuals(rng As Range)
+Dim i As Integer, n As Integer, data()
+Dim x() As Double, y() As Double, yp() As Double
+Dim m As Double, b As Double, e() As Double
+'we say data equals range to import the entire range of x and y
+data = rng
+'count total # of rows
+n = rng.Rows.Count
+'we redim x,y,yp,and e
+'Use the redim statement if you don't know the size of the array that
+'you need until runtime, or if you need to dynamically change the size
+'of the array based on user input or other factors
+
+'Note that when you use redim statement to change the size of an array
+'any data that was stored in the array will be lost. You may use
+'the keyword 'preserve' to preserve the data in the array when you
+'use
+ReDim x(n, 1) As Double, y(n, 1) As Double
+ReDim yp(n, 1) As Double, e(n, 1) As Double
+
+'next step is to import from data our vector x and y vector using for loop
+For i = 1 To n
+    x(i, 1) = data(i, 1)
+    y(i, 1) = data(i, 2)
+Next i
+'Next step is to calculate the slope and intercept
+'We use the worksheet func. slope
+m = WorksheetFunction.Slope(y, x)
+b = WorksheetFunction.Intercept(y, x)
+
+'then we enter into the second for loop where we calculate the predicted
+'this is the slope times the x value plus intercept
+'Then calculate the residual for each i
+For i = 1 To n
+    yp(i, 1) = m * x(i, 1) + b
+    e(i, 1) = yp(i, 1) - y(i, 1)
+Next i
+'Lastly we output
+'The output of a function is just the name of function
+Residuals = e
+End Function
