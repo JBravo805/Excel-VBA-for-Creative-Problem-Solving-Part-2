@@ -1,0 +1,41 @@
+Option Explicit
+Option Base 1
+
+Function Diagonals(rng As Range)
+Dim i As Integer, n As Integer
+'We need to dim our vector. The output vector that's going to be
+'diagonals.
+Dim D()
+n = rng.Rows.Count
+'D is going to be a nx1 column vector so we redim
+ReDim D(n, 1)
+For i = 1 To n
+    D(i, 1) = rng.Cells(i, i)
+Next i
+Diagonals = D
+End Function
+
+Sub FillRangeWithRandomNumbers()
+'Declare variable as type range
+'This will be used to store the range that the user selects
+Dim rng As Range, cell As Variant
+
+'prompt the user to select a range
+'The 'Type:=8' argument specifies that the input must be a range.
+'Selected range is stored in rng variable
+Set rng = Application.InputBox("Please select a range:", "Select Range", Type:=8)
+
+'Seed the random number generator
+'This function seeds the random generator, ensuring that the random
+'generated will be different each time the func. is run
+Randomize
+
+'Fill the range with random numbers
+'For each loop iterates over each cell in the 'rng' range.
+'The 'Rnd' function is used to generate a random number b/w 0 and 1,
+'including decimals. The value of the current cell is set to the random number
+'Loop continues until all cells in the range have been filled with a random num.
+For Each cell In rng
+    cell.Value = Rnd()
+Next cell
+End Sub
