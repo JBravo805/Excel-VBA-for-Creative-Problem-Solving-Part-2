@@ -1,0 +1,57 @@
+Option Explicit
+Option Base 1
+
+'Implement option base 1 typical when working with arrays
+Sub ShoppingList()
+Dim i As Integer, Ans As Integer, L() As Variant
+Do
+
+'Since we don't know how many times the user is going to press okay to add an item
+'to the shopping list, we are going to put this in a do loop
+
+ 'This puts a yes or no button on the message box
+ 'Yes is going to return a value to this answer variable. Yes returns an integer
+ 'value of 6 and No returns integer value of 7
+ Ans = MsgBox("Would you like to add an item to the shopping list?", vbYesNo)
+ 'If user clicks no, then we exit the loop. So, if ans=7 then we exit the do looop
+ If Ans = 7 Then Exit Do
+ 'ow increment item by one
+ i = i + 1
+ 'ReDim the size of L. This is going to be a vector of one component we then use
+  ReDim Preserve L(i) As Variant
+ 'the input box, so we can use an input box to obtain new items.
+ 'The first element will be placed in the first element of L and we loop back
+ L(i) = InputBox("Enter new item:")
+ 'We ask user again would you like to add an element. If yes that is a return value of 6
+ 'we stay inside the loop i will be 2. We ReDim L as size 2 but
+ 'PROBLEM. Whenever we redim you replace all the elements in that vector with zero.
+ 'To avoid this issue we use ReDim preserve we preserve previous elements but we are
+ 'still able to change the size.
+Loop
+'If user wants to add four items then i would equal four. This means range
+'A1 - A4. We transpose L vectors !by default are row vectors in VBA
+'but we need to transpose that for a column to make a column vector.
+Range("A1:A" & i) = WorksheetFunction.Transpose(L)
+End Sub
+
+Sub ArrayTest()
+Dim A() As Integer
+ReDim A(2, 2)
+A(1, 1) = 7
+A(2, 1) = 4
+A(1, 2) = 9
+A(2, 2) = 3
+ReDim Preserve A(2, 3)
+End Sub
+
+Sub ArrayTest2()
+Dim A() As Integer
+ReDim A(2, 2)
+A(1, 1) = 7
+A(2, 1) = 4
+A(1, 2) = 9
+A(2, 2) = 3
+'however if you want to add a row instead of adding a column. YOU CANNOT
+'
+ReDim Preserve A(3, 2)
+End Sub
