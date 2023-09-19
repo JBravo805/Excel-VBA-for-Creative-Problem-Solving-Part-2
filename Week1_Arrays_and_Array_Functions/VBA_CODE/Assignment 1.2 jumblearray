@@ -1,0 +1,76 @@
+Option Explicit
+Option Base 1
+Sub JumbleArray()
+'Place your code here
+Dim i As Integer, j As Integer, k As Integer
+Dim nr As Integer, nc As Integer, ntot As Integer
+Dim D() As Variant, A(), temp As Integer, rn As Integer
+'D represents the array(4x3) and A represents the vector (12x1)
+nr = Selection.Rows.Count
+nc = Selection.Columns.Count
+ntot = nr * nc ' Total number of elements
+'According to the instructions 1st need to decompose array D into a vector A(ntot,1)
+ReDim Preserve A(ntot, 1) As Variant
+D() = Selection
+
+'To stack our vector A we need a formula to populate A
+'we need a counter so k
+k = 1
+For i = 1 To nr
+    For j = 1 To nc
+    'We need D(j,i) since the "idea" is to stack columns on top of each other
+        A(k, 1) = D(j, i)
+        'increment k by 1 until we get to 12
+        k = k + 1
+    Next j
+Next i
+'assign the values of vector A to the specified range (for testing purposes)
+'Range("E1").Resize(UBound(A, 1), 1).Value = A
+
+'using this line below will not output all the elements of the vector A we must use
+' Resize method to match the size of the vector
+'Range("E1") = A
+
+'The range("E1") was a sanity check I needed to visually see the vector A with columns stacked on top of each other
+
+'Apply Durstenfeld's Algorithm on vector A
+For i = 1 To ntot
+    If i <= ntot Then
+        rn = WorksheetFunction.RandBetween(1, ntot - i + 1)
+        temp = A(ntot - i + 1, 1)
+        A(ntot - i + 1, 1) = A(rn, 1)
+        A(rn, 1) = temp
+    End If
+Next i
+Range("E1").Resize(UBound(A, 1), 1).Value = A
+'End Sub
+'when i=1, ntot=9 1<=9
+'rn=(1,9)=7 [The func. is picking a random num b/w 1-9 inclusive
+'temp=A(9,1)=5 [The five is not random here it is from vector pos. (9,1)
+'This one is a lil tricky
+'A(9,1)=A(7,1)=6 [According to pos (7,1) in vector A
+'A(7,1)=5
+
+'So we swapped index 9 and 7. If I'm correct A(9,1)=6 and A(7,1)=5
+'Correct! Now one more iteration for sanity check
+'when i=2,ntot=9 2<=9
+'rn=(1,8)= 5 [Again the five is random so next time it is ran it will be a diff num]
+'temp=A(8,1)=7
+'A(8,1) = A(5,1) = 2 [According to pos (5,1) in vector A]
+'A(5,1) = 7
+'So we have swapped A(8,1)=2 & A(5,1)=7
+'Yup I got this repeats until i=9 and by default will increment one more but doesnt do anything
+
+'Final step "Recompose" the original (mxn) i.e., D() [but now randomized]
+k = 1
+For i = 1 To nr
+    For j = 1 To nc
+    'We need D(j,i) since the "idea" is to stack columns on top of each other
+        D(j, i) = A(k, 1)
+        'increment k by 1 until we get to 12
+        k = k + 1
+    Next j
+Next i
+'Selection.Cells(j, i) = D
+Selection = D
+End Sub

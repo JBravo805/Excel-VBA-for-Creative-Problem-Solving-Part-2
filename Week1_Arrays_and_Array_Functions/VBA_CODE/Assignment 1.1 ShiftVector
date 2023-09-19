@@ -1,0 +1,15 @@
+Option Explicit
+Option Base 1
+Function ShiftVector(rng As Range, n As Integer)
+Dim nr As Integer, B() As Variant, i As Integer
+nr = rng.Rows.Count
+ReDim B(1 To nr)
+For i = 1 To nr
+   If i <= n Then
+      B(nr - n + i) = rng(i)
+   Else
+      B(i - n) = rng(i)
+   End If
+Next i
+ShiftVector = WorksheetFunction.Transpose(B)
+End Function
